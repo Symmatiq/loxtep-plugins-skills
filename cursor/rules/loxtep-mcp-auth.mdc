@@ -1,0 +1,27 @@
+---
+description: When Loxtep MCP returns "no valid auth token", run the customer MCP login command.
+globs: .cursor/rules/*.mdc
+alwaysApply: true
+---
+
+# Loxtep Customer MCP — Authentication
+
+When a call to the **Loxtep Customer MCP** (e.g. `create_project`, `list_projects`, or any tool on server `user-loxtep`) fails with:
+
+- **"No valid authentication token found"**, or
+- **"RBAC requires JWT token in Authorization header or x-jwt-token header"**,
+
+then **run the login command** so the user can re-authenticate:
+
+```bash
+npx @loxtep/customer-mcp-server login
+```
+
+**What happens:**
+- A local server starts and prints a URL (e.g. `https://appdev.loxtep.io/auth/mcp?port=38473`).
+- The user must open that URL in a browser, sign in to Loxtep, and complete the OAuth flow.
+- Tokens are saved to `~/.loxtep/customer-mcp.json`; the MCP server will use them on subsequent tool calls.
+
+**On MCP restart:** If no token file exists (and `LOXTEP_AUTH_TOKEN` is not set), the MCP server runs the login flow automatically at startup. The user will see the login URL in the MCP log; complete the flow in the browser within about 60 seconds or Cursor may time out and restart the server (you can complete login in the new session and retry). If one process completes login while Cursor is using another, the active process will use the updated token file on the next tool call (or after a failed refresh).
+
+**After login:** Retry the MCP tool call that failed (or, if login was triggered at startup, tool calls will work once login completes).

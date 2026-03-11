@@ -1,0 +1,23 @@
+{
+  "name": "loxtep",
+  "version": "1.0.0",
+  "description": "Loxtep data mesh platform — create projects, pipelines, data products, connections, and schemas from Cursor. 50+ MCP tools with OAuth login.",
+  "author": { "name": "Loxtep" },
+  "keywords": [
+    "data-mesh",
+    "pipelines",
+    "aws",
+    "data-products",
+    "mcp",
+    "connectors"
+  ],
+  "logo": "assets/logo.svg",
+  "repository": "https://github.com/symmatiq/loxtep-plugins-skills",
+  "license": "MIT",
+  "mcpServers": {
+    "loxtep": {
+      "command": "npx",
+      "args": ["@loxtep/customer-mcp-server"]
+    }
+  }
+}

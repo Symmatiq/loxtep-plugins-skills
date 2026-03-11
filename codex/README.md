@@ -1,0 +1,52 @@
+# Loxtep for Codex
+
+Use the [Loxtep](https://loxtep.io) Customer MCP from [OpenAI Codex](https://codex.openai.com) (CLI and IDE) to create projects, pipelines, data products, connectors, and more (50+ tools).
+
+This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `codex/`.
+
+## Prerequisites
+
+- **Node.js** 18+
+- **Loxtep account** with `owner`, `org_admin`, or `developer` role (for MCP tool access)
+
+## Install
+
+**Preferred — CLI:**
+
+```bash
+codex mcp add loxtep -- npx @loxtep/customer-mcp-server
+```
+
+**Alternative — manual config:**  
+Edit `~/.codex/config.toml` and add the snippet from `config.snippet.toml` in this repo (or the block below). Codex uses TOML; see [Codex MCP](https://developers.openai.com/codex/mcp) and [config reference](https://developers.openai.com/codex/config-reference).
+
+```toml
+[mcp_servers.loxtep]
+command = "npx"
+args = ["@loxtep/customer-mcp-server"]
+```
+
+2. **Log in once** to save your Loxtep tokens:
+   ```bash
+   npx @loxtep/customer-mcp-server login
+   ```
+   Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
+
+3. **Use the tools** — Loxtep tools are available in Codex (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`).
+
+## What you get
+
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more).
+
+## Environment variables (optional)
+
+- `LOXTEP_ENV` or `NODE_ENV` — Set to `dev` / `development` for dev app/API (`appdev.loxtep.io`, `apidev.loxtep.io`). Default is production.
+- `LOXTEP_APP_URL` — Override app base URL for login.
+- `LOXTEP_API_BASE_URL` — Override API endpoint.
+- `LOXTEP_TOKEN_FILE` — Custom path to token file (default `~/.loxtep/customer-mcp.json`).
+
+Configure these in the `[mcp_servers.loxtep]` section via `env` if your Codex version supports it, or set them in your shell. See the [Customer MCP Server README](https://github.com/symmatiq/loxtep/blob/main/platform-backend/_customer-mcp-server/README.md) for full details.
+
+## License
+
+MIT

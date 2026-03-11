@@ -1,0 +1,11 @@
+{
+  "name": "loxtep",
+  "version": "1.0.0",
+  "description": "Loxtep data mesh platform — create projects, pipelines, data products, connections, and schemas from Claude Code and Claude Cowork. 50+ MCP tools with OAuth login.",
+  "author": { "name": "Loxtep" },
+  "repository": "https://github.com/symmatiq/loxtep-plugins-skills",
+  "license": "MIT",
+  "keywords": ["data-mesh", "pipelines", "aws", "data-products", "mcp", "connectors"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

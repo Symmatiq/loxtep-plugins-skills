@@ -32,6 +32,26 @@ Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth 
 
 See each directory’s `README.md` for install and usage instructions.
 
+## Skill attribution (optional)
+
+When invoking Loxtep MCP tools, agents may pass `_metadata` in tool arguments for
+attribution and eval scoring. This is **fully optional** and backward-compatible.
+
+**Convention:** Include `_metadata: { skill_name: 'skill-slug' }` in the tool
+arguments. The `skill_name` should match the skill's `name` from its frontmatter
+(e.g. `create-connector`, `data-mesh-workflows`). The Loxtep platform uses this
+for per-skill eval and analytics when available.
+
+```json
+{
+  "connector_type": "shopify",
+  "metadata": { "api_key": "..." },
+  "_metadata": { "skill_name": "create-connector" }
+}
+```
+
+Tools ignore `_metadata` for tool logic; it is used only for request attribution.
+
 ## License
 
 MIT

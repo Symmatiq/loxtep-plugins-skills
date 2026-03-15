@@ -30,7 +30,7 @@ project:
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `list_connector_types`    | List available connector types and auth_type (api_key, oauth2, basic). Use to see what's available.                                                                                                                  |
 | `list_connectors`         | List connectors in the organization (filter by connector_type).                                                                                                                                                      |
-| `create_connector`        | Create a connector with **API key auth**. Pass connector_type and metadata (e.g. api_key).                                                                                                                             |
+| `create_connector`        | Create a connector with **API key auth**. Pass connector_type and metadata (e.g. api_key). Optionally include `_metadata: { skill_name: 'create-connector' }` for eval attribution.                                                                                                                             |
 | `get_connector_oauth_url` | Get OAuth URL for a connector. Pass connector_id (existing) OR connector_type + connection_config (e.g. Shopify: connector_type "shopify", connection_config { shop: "store-name" }). Creates connector after OAuth. |
 | `create_connection`       | Create a connection in a project (pipeline node).                                                                                                                                                                     |
 | `apply_blueprint`         | Apply a connector blueprint into a project. Params: project_id, blueprint_type "connectors", blueprint_slug.                                                                                                          |
@@ -68,3 +68,7 @@ npx @loxtep/customer-mcp-server login
 ```
 
 Then retry the tool call.
+
+## Skill attribution (optional)
+
+When calling MCP tools, you may pass `_metadata: { skill_name: 'create-connector' }` in tool args for per-skill eval attribution. Fully optional.

@@ -38,6 +38,8 @@ Guide for common Loxtep workflows using the Loxtep Customer MCP tools.
 | `create_connection`       | Create a connection in a project                                                       |
 | `patch_pipeline_graph`    | Add/update/remove nodes and edges in a pipeline graph                                  |
 
+**Skill attribution (optional):** When calling MCP tools, pass `_metadata: { skill_name: 'data-mesh-workflows' }` in tool args for eval attribution.
+
 ## Typical Flows
 
 1. **New project from template:** `create_project` with `template_slug`, or `create_project` then `apply_blueprint` for pipelines/connectors.

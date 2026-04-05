@@ -1,6 +1,6 @@
 # Loxtep for Antigravity IDE
 
-Use the [Loxtep](https://loxtep.io) Customer MCP from [Google Antigravity IDE](https://antigravity.chat) to create projects, pipelines, data products, connectors, and more (50+ tools).
+Use the [Loxtep](https://loxtep.io) Customer MCP from [Google Antigravity IDE](https://antigravity.chat): **16 grouped tools** (`loxtep_*`) with **`operation`** per call—projects, workflows, data products, connectors, and more.
 
 This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `antigravity/`.
 
@@ -25,11 +25,11 @@ This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/
    ```
    Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
 
-3. **Use the tools** — Loxtep tools are available to the agent (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`). You can often trigger them via "@" or the MCP tools list in the IDE.
+3. **Use the tools** — The agent sees `loxtep_*` tools; each call sets **`operation`** (e.g. `list_projects`) plus arguments. Trigger via "@" or the MCP tools list in the IDE.
 
 ## What you get
 
-- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more).
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (grouped tools + `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
 
 ## Environment variables (optional)
 

@@ -5,7 +5,7 @@ description: When Loxtep MCP returns "no valid auth token" or "RBAC requires JWT
 
 # Loxtep MCP — Authentication recovery
 
-When a call to the **Loxtep Customer MCP** fails with:
+When a call to a **Loxtep Customer MCP** tool (`loxtep_*` with an `operation` field) fails with:
 
 - **"No valid authentication token found"**, or
 - **"RBAC requires JWT token in Authorization header or x-jwt-token header"**,

@@ -1,6 +1,6 @@
 # Loxtep for Codex
 
-Use the [Loxtep](https://loxtep.io) Customer MCP from [OpenAI Codex](https://codex.openai.com) (CLI and IDE) to create projects, pipelines, data products, connectors, and more (50+ tools).
+Use the [Loxtep](https://loxtep.io) Customer MCP from [OpenAI Codex](https://codex.openai.com) (CLI and IDE): **16 grouped tools** (`loxtep_*`) with **`operation`** per invocation.
 
 This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `codex/`.
 
@@ -26,17 +26,17 @@ command = "npx"
 args = ["@loxtep/customer-mcp-server"]
 ```
 
-2. **Log in once** to save your Loxtep tokens:
+1. **Log in once** to save your Loxtep tokens:
    ```bash
    npx @loxtep/customer-mcp-server login
    ```
    Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
 
-3. **Use the tools** — Loxtep tools are available in Codex (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`).
+2. **Use the tools** — Codex exposes `loxtep_*` tools; use **`operation`** plus each action’s parameters (see Customer MCP README).
 
 ## What you get
 
-- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more).
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (grouped tools + `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
 
 ## Environment variables (optional)
 

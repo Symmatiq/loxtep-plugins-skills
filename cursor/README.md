@@ -1,6 +1,6 @@
 # Loxtep Cursor Plugin
 
-Cursor plugin for the [Loxtep](https://loxtep.io) data mesh platform. Use 50+ MCP tools from Cursor to create projects, pipelines, data products, connections, and schemas.
+Cursor plugin for the [Loxtep](https://loxtep.io) data mesh platform. The Customer MCP exposes **16 grouped tools** (`loxtep_projects`, `loxtep_workflows`, …); each call uses **`operation`** plus arguments (many actions total across those groups). Use it from Cursor to manage projects, workflows, data products, connections, templates, and more.
 
 This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `cursor/`. For Cursor Marketplace or “install from Git”, use the repo URL and select the `cursor/` path if your client supports subpaths.
 
@@ -17,13 +17,13 @@ This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/lox
    npx @loxtep/customer-mcp-server login
    ```
    Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
-3. **Use the tools** — Loxtep tools appear in the MCP palette (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`).
+3. **Use the tools** — In the MCP palette you’ll see names like `loxtep_projects` and `loxtep_connectors`. Pass **`operation`** (e.g. `list_projects`, `create_connector`) and the fields that action needs.
 
 ## What's included
 
-- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more).
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (grouped `loxtep_*` tools + `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
 - **Auth rule** — If a tool fails with "No valid authentication token", the agent is guided to run the login command.
-- **Skills** — `create-connector` (add connectors to projects or create connector instances) and `data-mesh-workflows` (common project/pipeline/data product flows).
+- **Skills** — `create-connector` and `data-workflows` (document the facade + `operation` pattern and common flows).
 
 ## Environment variables (optional)
 

@@ -1,63 +1,71 @@
 ---
 name: create-connector
 description:
-  Guides adding connectors to Loxtep projects using the Customer MCP. Use when
-  the user wants to add a connector, create a connector instance, connect an app
-  (Salesforce, QuickBooks, Slack, Shopify, etc.), get OAuth URL, or apply a
-  connector blueprint.
+  Guides adding connectors via Customer MCP grouped tools loxtep_connectors,
+  loxtep_connections, and loxtep_templates. Use for OAuth/API-key connectors,
+  project connections, or applying connector templates.
 ---
 
 # Create Connector (Customer MCP)
 
-This skill guides **adding connectors to your Loxtep project** using the Loxtep
-Customer MCP tools: listing types, creating connector instances (API key or
-OAuth), and applying connector blueprints.
+This skill covers **org-level connectors** and **project connection nodes** using the Customer MCP **facade** tools.
+
+## How calls work
+
+The client lists tools like **`loxtep_connectors`**, **`loxtep_connections`**, **`loxtep_templates`**. Every call must include:
+
+- **`operation`** — one of the allowed flat names for that tool (see table below).
+- **Other fields** — parameters for that action (e.g. `connector_type`, `project_id`).
+
+**Examples**
+
+- List connector types: tool **`loxtep_connectors`**, arguments `{ "operation": "list_connector_types" }`.
+- Create API-key connector: **`loxtep_connectors`**, `{ "operation": "create_connector", "connector_type": "...", ... }`.
+- Add a connection node to a project: **`loxtep_connections`**, `{ "operation": "create_connection", "project_id": "...", ... }`.
+- Apply a connector template: **`loxtep_templates`**, `{ "operation": "apply_template", "project_id": "...", "template_type": "...", "template_slug": "..." }`.
 
 ## When to Use
 
-- User wants to add an integration (Salesforce, QuickBooks, Slack, Shopify,
-  custom API)
-- User says "create connector", "add connector", "connect Shopify", "get OAuth
-  for connector"
-- User needs to create a connector instance or add a connection to a pipeline
+- User wants an integration (Salesforce, QuickBooks, Slack, Shopify, custom API)
+- User says “create connector”, “add connector”, “OAuth for connector”
+- User needs a connector instance or a **connection** on a workflow graph
 
-## Section A — Add Connector to Project (Existing Types)
+## Section A — Add connector to project (existing types)
 
-Use these **Customer MCP tools** to add an existing connector type to your
-project:
+| MCP tool            | `operation`             | Purpose                                                                                                                                 |
+| ------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `loxtep_connectors` | `list_connector_types`  | Available types and `auth_type` (api_key, oauth2, basic).                                                                               |
+| `loxtep_connectors` | `list_connectors`       | Connectors in the org (optional filter by `connector_type`).                                                                          |
+| `loxtep_connectors` | `create_connector`      | Create connector with **API key** (or basic) auth; pass `connector_type` and credentials/metadata.                                     |
+| `loxtep_connectors` | `get_connector_oauth_url` | OAuth URL; often `connector_type` + `connection_config` (e.g. Shopify shop slug). User completes OAuth in the browser.                 |
+| `loxtep_connections` | `create_connection`    | Create a **connection** node in a project (ties a connector into a flow).                                                             |
+| `loxtep_templates`  | `apply_template`        | Apply a catalog template into a project: `project_id`, `template_type`, `template_slug`.                                                |
 
-| Tool                      | Purpose                                                                                                                                                                                                              |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `list_connector_types`    | List available connector types and auth_type (api_key, oauth2, basic). Use to see what's available.                                                                                                                  |
-| `list_connectors`         | List connectors in the organization (filter by connector_type).                                                                                                                                                      |
-| `create_connector`        | Create a connector with **API key auth**. Pass connector_type and metadata (e.g. api_key). Optionally include `_metadata: { skill_name: 'create-connector' }` for eval attribution.                                                                                                                             |
-| `get_connector_oauth_url` | Get OAuth URL for a connector. Pass connector_id (existing) OR connector_type + connection_config (e.g. Shopify: connector_type "shopify", connection_config { shop: "store-name" }). Creates connector after OAuth. |
-| `create_connection`       | Create a connection in a project (pipeline node).                                                                                                                                                                     |
-| `apply_blueprint`         | Apply a connector blueprint into a project. Params: project_id, blueprint_type "connectors", blueprint_slug.                                                                                                          |
+To change the workflow graph (nodes/edges), use **`loxtep_workflows`** with `operation: "patch_workflow_graph"` (see **data-workflows** skill).
 
 ### Flow: API key connector
 
-1. `list_connector_types` — confirm the type exists and auth_type is api_key (or basic).
-2. `create_connector` — pass connector_type and metadata (e.g. api_key).
-3. Use the returned connector_id in `create_pipeline` (connector_id) or `patch_pipeline_graph` (add connection node).
+1. `loxtep_connectors` + `list_connector_types`.
+2. `loxtep_connectors` + `create_connector`.
+3. Use returned `connector_id` in `loxtep_connections` + `create_connection`, or in `loxtep_workflows` + `patch_workflow_graph`.
 
-### Flow: OAuth connector (e.g. Shopify)
+### Flow: OAuth (e.g. Shopify)
 
-1. `list_connector_types` — confirm the type (e.g. shopify) and auth_type oauth2.
-2. `get_connector_oauth_url` — pass connector_type and connection_config (e.g. shop: "store-name" from store.myshopify.com). User opens oauth_url in browser and completes flow.
-3. After OAuth, connector is created; use connector_id in `create_pipeline` or add connection via `patch_pipeline_graph`.
+1. `loxtep_connectors` + `list_connector_types`.
+2. `loxtep_connectors` + `get_connector_oauth_url` — user finishes OAuth in the browser.
+3. Use `connector_id` in `create_connection` or graph patch as above.
 
-### Flow: Apply connector blueprint
+### Flow: Apply connector template
 
-1. `list_blueprints` — optional; category "connectors" to see connector blueprints.
-2. `apply_blueprint` — project_id, blueprint_type "connectors", blueprint_slug.
+1. Optional: `loxtep_templates` + `list_templates` / `get_template`.
+2. `loxtep_templates` + `apply_template` with `project_id`, `template_type`, `template_slug`.
 
-## Section B — Add New Connector Type (Platform Partners)
+## Section B — Add new connector type (platform partners)
 
-Adding a **new connector type** (new provider + blueprint to the platform catalog) is platform-level work. It is not available via the Customer MCP.
+Adding a **new connector type** (new provider in the platform catalog) is not available via Customer MCP.
 
-- **Platform partners / Loxtep contributors:** Use the internal Loxtep MCP (scaffold_connector_provider, scaffold_connector_blueprint) in the platform monorepo, or follow the guides ADDING_A_NEW_CONNECTOR_TYPE and ADDING_A_COMPOSIO_CONNECTOR.
-- **Customers:** Use the existing connector types from `list_connector_types` and the flows in Section A. To request a new connector type, contact Loxtep.
+- **Platform partners / Loxtep contributors:** Internal dev MCP or guides `ADDING_A_NEW_CONNECTOR_TYPE` / `ADDING_A_COMPOSIO_CONNECTOR` in the Loxtep monorepo.
+- **Customers:** Use `list_connector_types` and Section A; contact Loxtep to request new types.
 
 ## Auth
 
@@ -67,8 +75,18 @@ If any tool returns "No valid authentication token" or "RBAC requires JWT", run:
 npx @loxtep/customer-mcp-server login
 ```
 
-Then retry the tool call.
+Then retry.
 
 ## Skill attribution (optional)
 
-When calling MCP tools, you may pass `_metadata: { skill_name: 'create-connector' }` in tool args for per-skill eval attribution. Fully optional.
+Include `_metadata` alongside `operation` and other args, for example:
+
+```json
+{
+  "operation": "create_connector",
+  "connector_type": "shopify",
+  "_metadata": { "skill_name": "create-connector" }
+}
+```
+
+Fully optional; ignored for tool logic.

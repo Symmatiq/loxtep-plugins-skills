@@ -1,6 +1,6 @@
 # Loxtep for Kiro
 
-Use the [Loxtep](https://loxtep.io) Customer MCP from [Kiro](https://kiro.dev) to create projects, pipelines, data products, connectors, and more (50+ tools).
+Use the [Loxtep](https://loxtep.io) Customer MCP from [Kiro](https://kiro.dev): **16 grouped tools** (`loxtep_*`) with per-call **`operation`**, covering projects, workflows, data products, connectors, and more.
 
 This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `kiro/`.
 
@@ -22,11 +22,11 @@ This directory lives in the [loxtep-plugins-skills](https://github.com/symmatiq/
    ```
    Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
 
-3. **Use the tools** — Loxtep tools appear in Kiro’s MCP panel (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`).
+3. **Use the tools** — Kiro’s MCP panel lists `loxtep_projects`, `loxtep_workflows`, etc. Pass **`operation`** (flat action name) and the fields that action needs.
 
 ## What you get
 
-- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more). Kiro uses MCP tools only; there is no separate “skills” bundle.
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (grouped `loxtep_*` + `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more). Kiro uses MCP tools only; there is no separate “skills” bundle.
 
 ## Environment variables (optional)
 

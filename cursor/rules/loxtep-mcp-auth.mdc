@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Loxtep Customer MCP — Authentication
 
-When a call to the **Loxtep Customer MCP** (e.g. `create_project`, `list_projects`, or any tool on server `user-loxtep`) fails with:
+When a call to the **Loxtep Customer MCP** (e.g. tool `loxtep_projects` with `operation: "list_projects"`, or any `loxtep_*` tool on server `user-loxtep`) fails with:
 
 - **"No valid authentication token found"**, or
 - **"RBAC requires JWT token in Authorization header or x-jwt-token header"**,

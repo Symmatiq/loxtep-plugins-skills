@@ -1,6 +1,6 @@
 # Loxtep Claude Plugin
 
-Claude Code and Claude Cowork plugin for the [Loxtep](https://loxtep.io) data mesh platform. Use 50+ MCP tools from Claude to create projects, pipelines, data products, connections, and schemas.
+Claude Code and Claude Cowork plugin for the [Loxtep](https://loxtep.io) data mesh platform. The Customer MCP lists **16 grouped tools** (`loxtep_*`); each invocation sets **`operation`** to the flat action name plus parameters—covering projects, workflows, data products, connectors, and more.
 
 This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/loxtep-plugins-skills) repo under `claude/`.
 
@@ -17,12 +17,12 @@ This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/lox
    npx @loxtep/customer-mcp-server login
    ```
    Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth flow.
-3. **Use the tools** — Loxtep tools appear in Claude’s toolkit (e.g. `create_project`, `list_projects`, `apply_blueprint`, `create_connector`).
+3. **Use the tools** — You’ll see grouped tools like `loxtep_projects` and `loxtep_connectors`. Each call includes **`operation`** (e.g. `list_projects`) plus that action’s arguments.
 
 ## What's included
 
-- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (projects, pipelines, data products, connectors, connections, schemas, catalog, blueprints, and more).
-- **Skills** — `create-connector` (add connectors to projects), `data-mesh-workflows` (common project/pipeline/data product flows), and `loxtep-auth` (recovery when auth fails).
+- **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (16 `loxtep_*` tools with per-call `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
+- **Skills** — `create-connector`, `data-workflows` (facade + `operation` pattern and flows), and `loxtep-auth` (recovery when auth fails).
 
 ## Environment variables (optional)
 

@@ -1,6 +1,8 @@
 # Loxtep Plugins & Skills
 
-Plugins and skills for using [Loxtep](https://loxtep.io) from AI coding and productivity tools. All integrations use the same **Loxtep Customer MCP** (`npx @loxtep/customer-mcp-server`) and expose the same Loxtep tools (projects, pipelines, data products, connectors, blueprints, and more).
+Plugins and skills for using [Loxtep](https://loxtep.io) from AI coding and productivity tools. All integrations use the same **Loxtep Customer MCP** (`npx @loxtep/customer-mcp-server`).
+
+The MCP server registers **16 grouped tools** named `loxtep_projects`, `loxtep_workflows`, `loxtep_connectors`, and so on. Each call sets **`operation`** to the flat action name (e.g. `list_projects`, `create_connection`) plus that action’s arguments. See the [Customer MCP README](https://github.com/symmatiq/loxtep/blob/main/platform-backend/_customer-mcp-server/README.md) for the full map. Under the hood that still covers projects, workflows, data products, connectors, templates, catalog, and the rest of the customer tool surface.
 
 ## Plugins (siblings)
 
@@ -32,6 +34,8 @@ Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth 
 
 See each directory’s `README.md` for install and usage instructions.
 
+**Skills roadmap** (current vs candidate future skills): [docs/skills-roadmap.md](docs/skills-roadmap.md).
+
 ## Skill attribution (optional)
 
 When invoking Loxtep MCP tools, agents may pass `_metadata` in tool arguments for
@@ -39,16 +43,19 @@ attribution and eval scoring. This is **fully optional** and backward-compatible
 
 **Convention:** Include `_metadata: { skill_name: 'skill-slug' }` in the tool
 arguments. The `skill_name` should match the skill's `name` from its frontmatter
-(e.g. `create-connector`, `data-mesh-workflows`). The Loxtep platform uses this
+(e.g. `create-connector`, `data-workflows`). The Loxtep platform uses this
 for per-skill eval and analytics when available.
 
 ```json
 {
+  "operation": "create_connector",
   "connector_type": "shopify",
   "metadata": { "api_key": "..." },
   "_metadata": { "skill_name": "create-connector" }
 }
 ```
+
+(Call the MCP tool **`loxtep_connectors`** with the JSON above as arguments.)
 
 Tools ignore `_metadata` for tool logic; it is used only for request attribution.
 

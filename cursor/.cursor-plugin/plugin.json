@@ -1,7 +1,7 @@
 {
   "name": "loxtep",
   "version": "1.0.0",
-  "description": "Loxtep data mesh platform — projects, workflows, data products, connectors from Cursor. Customer MCP: 16 grouped tools (loxtep_*) with per-call operation; OAuth login.",
+  "description": "Loxtep data platform — projects, workflows, data products, connectors from Cursor. Customer MCP: 16 grouped tools (loxtep_*) with per-call operation; OAuth login.",
   "author": { "name": "Loxtep" },
   "keywords": [
     "data-mesh",

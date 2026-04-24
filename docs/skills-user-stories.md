@@ -1,0 +1,215 @@
+# User stories → Customer MCP (living catalog)
+
+Canonical MCP facades: [Customer MCP README](https://github.com/symmatiq/loxtep/blob/main/platform-backend/_customer-mcp-server/README.md). Operation scopes align with `mcp-facade-op-scopes` in the Loxtep monorepo.
+
+Each story lists **primary skill** (where the narrative lives) and **supporting skills**.
+
+---
+
+## Story index
+
+| ID | Story | Primary skill |
+|----|--------|----------------|
+| S0 | Know who I am and which org I am in | `loxtep-mcp-session` (capabilities / denials); `data-workflows` (session ops in flows) |
+| S1 | Connect a SaaS store or API (e.g. Shopify) and bring data into a project | `create-connector` |
+| S2 | Build a **data product** that unifies data across channels (omnichannel) | `data-workflows` |
+| S3 | Send data product updates to an **external webhook** | `data-workflows` |
+| S4 | Configure **org-level** schemas, semantics, PII, and quality rules | `org-semantics-quality` |
+| S5 | **Discover** assets, lineage, evidence, governance; run discovery | `discover-govern-lineage` |
+| S6 | **Query** mesh data with SQL / analytics | `loxtep-analytics` |
+| S7 | **Snapshots**, compare versions, reindex workspace, inspect queues | `loxtep-workspace` |
+| S8 | **Entity / decision** intelligence, ontology paths, thesaurus | `loxtep-process-intel` |
+| S9 | **Procedures** (process graph) — list, CRUD, procedure workflow | `loxtep-procedures` |
+| S10 | **Agent** issues/goals/projects (not data-mesh workflow projects) | `loxtep-agent-workspace` |
+| S11 | **Provision** or list runtime instances (shared playground vs managed paid) | `loxtep-instances` |
+| S12 | Recover from **auth** failures on MCP | `loxtep-auth` |
+
+---
+
+## S0 — Session and organization context
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Any user or agent before other calls |
+| **Preconditions** | Valid MCP login |
+| **Happy path** | `loxtep_session` + `get_current_user` → `get_current_organization` |
+| **Capabilities** | `get_current_user` returns **`permissions`** (effective `resource` / `action` grants) and **`roles`**. Use with your client’s **ListTools** for `loxtep_*` parameters — there is no extra “what can I do” MCP operation. |
+| **MCP** | Tool `loxtep_session`, operations `get_current_user`, `get_current_organization` (organization scope) |
+| **Out of scope** | RBAC role editing |
+
+---
+
+## S1 — Connect Shopify (or similar) and ingest
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Data engineer, integrator |
+| **Preconditions** | Org role allows connectors; optional `project_id` for connection node |
+| **Happy path** | `list_connector_types` → `get_connector_oauth_url` or `create_connector` → `create_connection` in project → wire graph via `patch_workflow_graph` (see S2) |
+| **MCP** | `loxtep_connectors` (global/org), `loxtep_connections` (project), `loxtep_workflows` for graph |
+| **Primary skill** | `create-connector` |
+| **Edge cases** | OAuth timeout; connector type not in catalog — request new types from Loxtep |
+
+---
+
+## S2 — Omnichannel data product (unify sales across channels)
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Data product owner |
+| **Preconditions** | Project exists; connections per channel (S1) |
+| **Happy path** | `create_project` or `get_project` → multiple `create_connection` / graph → `create_data_product` with definitions linking sources → `get_data_product` / `update_data_product` |
+| **MCP** | `loxtep_projects`, `loxtep_connections`, `loxtep_workflows`, `loxtep_data_products`, `loxtep_templates` optional |
+| **Primary skill** | `data-workflows` |
+| **Out of scope** | Billing for managed infra (see `loxtep-instances`) |
+
+---
+
+## S3 — Webhook delivery for data product updates
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Integrator exposing mesh events to sales stack |
+| **Preconditions** | `data_product_id` known |
+| **Happy path** | `list_consumptions` (optional) → `create_consumption` with `data_product_id`, `endpoint_url`, optional `headers`, `secret_token`, `filters` |
+| **MCP** | `loxtep_data_products`: `create_consumption`, `list_consumptions` (organization-scoped; requires `data_product_id`) |
+| **Primary skill** | `data-workflows` |
+| **Product note** | Tool descriptions reference webhook subscriptions (consumptions). If your deployment restricts consumptions, treat as **partial** until API confirms. |
+
+---
+
+## S4 — Org semantics, schemas, ontology-adjacent definitions, quality
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Governance lead, semantic modeler |
+| **Preconditions** | Org permissions for schemas/quality |
+| **Happy path** | `create_schema` / `update_schema` / `get_schema` / `list_schema_versions` / `tag_pii_fields` → `create_quality_rule` / `test_quality_rule` / `list_quality_rules` |
+| **MCP** | `loxtep_schemas`, `loxtep_quality` |
+| **Primary skill** | `org-semantics-quality` |
+| **Related** | S5 (catalog), S8 (ontology relationships, thesaurus) |
+
+---
+
+## S5 — Discover, lineage, evidence, governance flags
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Analyst, data steward |
+| **Happy path** | `search_catalog` → `get_catalog_entry` / `get_evidence` / `get_lineage_impact` / `get_governance_flags` → optional `run_discovery`; `list_domains`, `list_tags` |
+| **MCP** | `loxtep_catalog` (catalog-scoped ops: `search_catalog`, `get_catalog_entry`, … per facade list) |
+| **Primary skill** | `discover-govern-lineage` |
+
+---
+
+## S6 — Analytics / SQL over mesh
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Analyst |
+| **Happy path** | `list_tables` → `get_table_schema` → `execute_query` → `get_query_results` (poll if async) |
+| **MCP** | `loxtep_analytics` |
+| **Primary skill** | `loxtep-analytics` |
+
+---
+
+## S7 — Workspace versions and recovery
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Engineer fixing drift or auditing |
+| **Happy path** | `list_versions` → `create_snapshot` / `compare_versions` / `restore_version` → `reindex_workspace`; ops health: `get_queue_info`, `replay_events` |
+| **MCP** | `loxtep_workspace` (mix of project-scoped and org — see skill) |
+| **Primary skill** | `loxtep-workspace` |
+
+---
+
+## S8 — Process intelligence
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Ops / analytics investigating entities |
+| **Happy path** | `get_entity_context` / `query_entity_context` → `list_decision_traces` → `get_ontology_relationships` / `list_thesaurus_terms` / `resolve_canonical_key` |
+| **MCP** | `loxtep_process_intel` |
+| **Primary skill** | `loxtep-process-intel` |
+
+---
+
+## S9 — Procedures
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | Process owner |
+| **Happy path** | `list_procedures` → `get_procedure_workflow` → `create_procedure` / `update_procedure` / `delete_procedure` |
+| **MCP** | `loxtep_procedures` |
+| **Primary skill** | `loxtep-procedures` |
+
+---
+
+## S10 — Agent orchestration workspace
+
+| Field | Detail |
+|-------|--------|
+| **Persona** | User of agent / issue tracker features |
+| **Happy path** | `agent_orchestration_list_projects` / `create_issue` / `list_issues` / goals / agents (flat tool names on facade `loxtep_agent_workspace`) |
+| **MCP** | `loxtep_agent_workspace` — **not** `loxtep_projects` / `loxtep_workflows` |
+| **Primary skill** | `loxtep-agent-workspace` |
+
+---
+
+## S11 — Instances
+
+| Field | Detail |
+|-------|--------|
+| **Happy path** | `list_instances`; `create_instance` with correct `instance_type` + `plan_id` |
+| **Primary skill** | `loxtep-instances` |
+
+---
+
+## S12 — Auth recovery
+
+| Field | Detail |
+|-------|--------|
+| **Primary skill** | `loxtep-auth` |
+
+---
+
+## Skill clusters (maintenance view)
+
+| Skill `name` | Stories | Facades (MCP tools) |
+|--------------|---------|---------------------|
+| `loxtep-auth` | S12 | — |
+| `loxtep-instances` | S11 | `loxtep_instances` |
+| `create-connector` | S1 | `loxtep_connectors`, `loxtep_connections`, `loxtep_templates` (connector flows) |
+| `data-workflows` | S0, S2, S3 (+ orchestrates S1 with create-connector) | `loxtep_session`, `loxtep_projects`, `loxtep_templates`, `loxtep_workflows`, `loxtep_connections`, `loxtep_data_products` |
+| `discover-govern-lineage` | S5 | `loxtep_catalog` |
+| `org-semantics-quality` | S4 | `loxtep_schemas`, `loxtep_quality` |
+| `loxtep-analytics` | S6 | `loxtep_analytics` |
+| `loxtep-workspace` | S7 | `loxtep_workspace` |
+| `loxtep-process-intel` | S8 | `loxtep_process_intel` |
+| `loxtep-procedures` | S9 | `loxtep_procedures` |
+| `loxtep-agent-workspace` | S10 | `loxtep_agent_workspace` |
+
+---
+
+## MCP operation → skill index (drift helper)
+
+Regenerate mentally from [`mcp-facades.ts`](https://github.com/symmatiq/loxtep/blob/main/platform-backend/ai/lib/tools/mcp-facades.ts): every `operation` should appear in **exactly one** primary skill’s MCP mapping appendix (or shared where noted: `create_connection` appears in both `create-connector` and `data-workflows` by design).
+
+| `operation` | Primary skill |
+|-------------|----------------|
+| `get_current_user`, `get_current_organization` | `data-workflows` |
+| `list_connector_types`, `list_connectors`, `create_connector`, `get_connector_oauth_url` | `create-connector` |
+| `list_projects`, `get_project`, `create_project`, `update_project`, `delete_project` | `data-workflows` |
+| `list_templates`, `get_template`, `apply_template` | `data-workflows` (templates); `create-connector` when applying **connector** templates only |
+| `create_workflow`, `update_workflow`, `delete_workflow`, `list_workflows`, `get_workflow`, `get_workflow_graph`, `patch_workflow_graph`, `preview_transform`, `create_transformation`, `create_validation` | `data-workflows` |
+| `create_connection`, `update_connection`, `delete_connection`, `list_connections`, `get_connection`, `test_connection` | `create-connector` **and** `data-workflows` |
+| `create_data_product`, `update_data_product`, `delete_data_product`, `list_data_products`, `get_data_product`, `get_data_product_lexicon`, `list_consumptions`, `create_consumption` | `data-workflows` |
+| All `loxtep_catalog` ops | `discover-govern-lineage` |
+| All `loxtep_schemas` / `loxtep_quality` ops | `org-semantics-quality` |
+| All `loxtep_analytics` ops | `loxtep-analytics` |
+| All `loxtep_workspace` ops | `loxtep-workspace` |
+| All `loxtep_process_intel` ops | `loxtep-process-intel` |
+| All `loxtep_procedures` ops | `loxtep-procedures` |
+| All `agent_orchestration_*` | `loxtep-agent-workspace` |
+| `list_instances`, `create_instance` | `loxtep-instances` |

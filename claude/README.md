@@ -22,7 +22,7 @@ This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/lox
 ## What's included
 
 - **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (16 `loxtep_*` tools with per-call `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
-- **Skills** — `create-connector`, `data-workflows` (facade + `operation` pattern and flows), and `loxtep-auth` (recovery when auth fails).
+- **Skills** — Story-first playbooks (see [docs/skills-user-stories.md](../docs/skills-user-stories.md)): `loxtep-auth`, `loxtep-instances`, `create-connector`, `data-workflows`, `discover-govern-lineage`, `org-semantics-quality`, `loxtep-analytics`, `loxtep-workspace`, `loxtep-process-intel`, `loxtep-procedures`, `loxtep-agent-workspace`. Each lives under `claude/skills/<slug>/SKILL.md` with MCP mapping tables where applicable.
 
 ## Environment variables (optional)
 

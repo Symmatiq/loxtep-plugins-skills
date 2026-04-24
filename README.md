@@ -34,7 +34,11 @@ Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth 
 
 See each directory’s `README.md` for install and usage instructions.
 
-**Skills roadmap** (current vs candidate future skills): [docs/skills-roadmap.md](docs/skills-roadmap.md).
+**User story catalog** (S0–S12, intent → skill → MCP): [docs/skills-user-stories.md](docs/skills-user-stories.md).
+
+**Skills roadmap** (indexes by story and by facade, `_metadata` slugs, drift notes): [docs/skills-roadmap.md](docs/skills-roadmap.md).
+
+**MCP vs skills drift** (manual process; no CI parser): [docs/mcp-operation-skills-drift.md](docs/mcp-operation-skills-drift.md).
 
 ## Skill attribution (optional)
 
@@ -42,9 +46,22 @@ When invoking Loxtep MCP tools, agents may pass `_metadata` in tool arguments fo
 attribution and eval scoring. This is **fully optional** and backward-compatible.
 
 **Convention:** Include `_metadata: { skill_name: 'skill-slug' }` in the tool
-arguments. The `skill_name` should match the skill's `name` from its frontmatter
-(e.g. `create-connector`, `data-workflows`). The Loxtep platform uses this
-for per-skill eval and analytics when available.
+arguments. The `skill_name` must match the skill’s `name` from its YAML frontmatter.
+The Loxtep platform uses this for per-skill eval and analytics when available.
+
+| `skill_name` (use exactly) |
+|----------------------------|
+| `loxtep-auth` |
+| `loxtep-instances` |
+| `create-connector` |
+| `data-workflows` |
+| `discover-govern-lineage` |
+| `org-semantics-quality` |
+| `loxtep-analytics` |
+| `loxtep-workspace` |
+| `loxtep-process-intel` |
+| `loxtep-procedures` |
+| `loxtep-agent-workspace` |
 
 ```json
 {

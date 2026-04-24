@@ -23,7 +23,7 @@ This plugin lives in the [loxtep-plugins-skills](https://github.com/symmatiq/lox
 
 - **Loxtep Customer MCP** — `npx @loxtep/customer-mcp-server` (grouped `loxtep_*` tools + `operation`; projects, workflows, data products, connectors, templates, catalog, schemas, and more).
 - **Auth rule** — If a tool fails with "No valid authentication token", the agent is guided to run the login command.
-- **Skills** — `create-connector` and `data-workflows` (document the facade + `operation` pattern and common flows).
+- **Skills** — Same set as Claude (parity): [docs/skills-user-stories.md](../docs/skills-user-stories.md). Slugs: `loxtep-auth`, `loxtep-instances`, `create-connector`, `data-workflows`, `discover-govern-lineage`, `org-semantics-quality`, `loxtep-analytics`, `loxtep-workspace`, `loxtep-process-intel`, `loxtep-procedures`, `loxtep-agent-workspace` under `cursor/skills/<slug>/SKILL.md`.
 
 ## Environment variables (optional)
 

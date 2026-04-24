@@ -3,7 +3,8 @@ name: loxtep-instances
 description:
   Use when the user works with Loxtep runtime instances via Customer MCP — list_instances,
   create_instance, loxtep_instances, instance provisioning, shared vs managed, starter plan,
-  plan_id, regions, or "create a Loxtep instance". User story S11; see docs/skills-user-stories.md.
+  plan_id, payment_method_id, billing UI (add payment methods in app, not MCP), regions, or
+  "create a Loxtep instance". User story S11; see docs/skills-user-stories.md.
 ---
 
 # Loxtep instances (Customer MCP)
@@ -12,6 +13,12 @@ description:
 
 - **MCP tool:** `loxtep_instances`
 - **Arguments:** `{ "operation": "list_instances" | "create_instance", ...fields }`
+
+### Payment methods — app UI only (read this)
+
+- **There is no MCP tool** to create, tokenize, or add a payment method. Do not ask the user for card numbers, CVV, or bank account details in chat.
+- For **managed** or **self-hosted** instances, the user must add a payment method in the **Loxtep app** (Billing, Account, or Payments — exact label depends on the product), complete the **payment processor** flow there, then use the saved method’s **`payment_method_id` (UUID)** in `create_instance`.
+- If the user has no method yet, **direct them to the dashboard** (e.g. dev or prod app URL for their environment), not to imaginary MCP billing APIs.
 
 ## list_instances
 
@@ -37,7 +44,7 @@ Pass **flat** fields (not nested `instance_config`) — the platform maps them.
 | ----- | ----- |
 | `name`, `region`, `instance_type` | Required. |
 | `plan_id` | Required for **managed**. Omit or non-paid for **shared**. |
-| `payment_method_id` | **Required** for **managed** and **self-hosted**. Omit for **shared**. |
+| `payment_method_id` | **Required** for **managed** and **self-hosted**. Omit for **shared**. Value is a UUID for a method **already** saved in the app (see **Payment methods — app UI only** above). |
 | `connection_details` | **Self-hosted** only; nested `observe_api` with the three ARNs above. |
 
 ### Correct examples

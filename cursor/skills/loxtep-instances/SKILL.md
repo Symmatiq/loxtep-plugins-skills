@@ -38,7 +38,7 @@ Pass **flat** fields (not nested `instance_config`) — the platform maps them.
 | ----------------- | -------- | --------- |
 | **`shared`** | Default **free-tier playground** (multi-tenant). What product copy often calls a “sandbox” **instance** (name/UX), not a billing SKU. | Omit or **`free`** only. **Never** `starter` / `pro` / `enterprise` — API and MCP validation **reject** shared + paid plan. |
 | **`managed`** | Paid **dedicated** infrastructure. | **`starter`**, **`pro`**, or **`enterprise`** (required). **`payment_method_id`** is **required** (same rules as `POST /organizations/instances`). |
-| **`self-hosted`** | Customer AWS; advanced / may be limited by environment. | **`payment_method_id`** required. **`connection_details.observe_api`** must include **`cross_account_role_arn`**, **`rstreams_secret_arn`**, and **`rstreams_auth_arn`** (optional: `mode`, `namespace`, `external_id`). |
+| **`self-hosted`** | Customer AWS; advanced / may be limited by environment. | **`payment_method_id`** required. **`connection_details.observe_api`** must include **`cross_account_role_arn`**, the stream **integration** secret ARN, and the **auth** secret ARN (API field names are fixed; optional: `mode`, `namespace`, `external_id`). |
 
 ### Field summary
 
@@ -47,7 +47,7 @@ Pass **flat** fields (not nested `instance_config`) — the platform maps them.
 | `name`, `region`, `instance_type` | Required. |
 | `plan_id` | Required for **managed**. Omit or non-paid for **shared**. |
 | `payment_method_id` | **Required** for **managed** and **self-hosted**. Omit for **shared**. Value is a UUID for a method **already** saved in the app (see **Payment methods — app UI only** above). |
-| `connection_details` | **Self-hosted** only; nested `observe_api` with the three ARNs above. |
+| `connection_details` | **Self-hosted** only; nested `observe_api` with the role + two stream integration ARNs (exact keys from the product API). |
 
 ### Correct examples
 
@@ -77,6 +77,8 @@ Pass **flat** fields (not nested `instance_config`) — the platform maps them.
 
 ### Self-hosted example (shape)
 
+Keys under `observe_api` match the **Connect** API. Replace ARNs with values from your deployment.
+
 ```json
 {
   "operation": "create_instance",
@@ -87,7 +89,7 @@ Pass **flat** fields (not nested `instance_config`) — the platform maps them.
   "connection_details": {
     "observe_api": {
       "cross_account_role_arn": "arn:aws:iam::123456789012:role/LoxtepObserve",
-      "rstreams_secret_arn": "arn:aws:secretsmanager:us-east-1:123:secret:rstreams",
+      "rstreams_secret_arn": "arn:aws:secretsmanager:us-east-1:123:secret:stream-integration",
       "rstreams_auth_arn": "arn:aws:secretsmanager:us-east-1:123:secret:auth"
     }
   }

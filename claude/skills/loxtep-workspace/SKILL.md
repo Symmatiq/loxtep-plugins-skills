@@ -22,7 +22,7 @@ description:
 
 ## Platform honesty (limits)
 
-- **`get_queue_info`** — Loads data product detail when `data_product_id` is set and the platform API is reachable; response includes `storage.rstreams_queue` / ingestion hints when present.
+- **`get_queue_info`** — Loads data product detail when `data_product_id` is set and the platform API is reachable; response includes the stream queue binding in `storage` / ingestion hints when present.
 - **`replay_events`** — **Does not** run historical stream replay over MCP. The tool records parameters and sets **`historical_replay_via_mcp: false`**; use Observe / consumer offset tools or **`POST /dataproducts/{id}/deliver-event`** for synthetic exercise — see tool response `message`.
 
 ## Happy-path flows

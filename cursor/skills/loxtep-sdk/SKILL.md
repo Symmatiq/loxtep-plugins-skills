@@ -1,6 +1,6 @@
 ---
 name: loxtep-sdk
-description: Bootstrap @loxtep/sdk in Node (auth, env, REST vs leo bus), map MCP tools to SDK methods, and avoid mixing JWT with IAM. Use when adding Loxtep SDK usage, queue readers/writers, or pairing MCP with runtime code.
+description: Bootstrap @loxtep/sdk in Node (auth, env, REST vs Loxtep streams), map MCP tools to SDK methods, and avoid mixing JWT with IAM. Use when adding Loxtep SDK usage, queue readers/writers, or pairing MCP with runtime code.
 ---
 
 # Loxtep Node SDK (agent skill)
@@ -45,14 +45,14 @@ loxtep config export --from-data-product "<uuid>" --format json
 ## MCP vs SDK
 
 - **MCP:** provisioning, catalog, agent tool calls over HTTP.  
-- **SDK:** typed REST + **leo-sdk** for **live** queues.  
+- **SDK:** typed REST + **Loxtep streams** (live queues / bus).  
 - See shipped docs in `@loxtep/sdk`: `docs/sdk-pairing.md`, `docs/sdk-mcp-mapping.md`.
 
 ## Stream vs replay
 
-- **`data_products.stream`:** live bus via leo when `bot_id` + `rstreams`/`LEO_*` configured; otherwise error/missing queue.  
+- **`data_products.stream`:** live bus when `bot_id` + stream bus config exists; otherwise error/missing queue.  
 - **`data_products.replay`:** historical path via platform HTTP (observe/trace semantics).
 
 ## Bus credentials
 
-JWT is **not** bus IAM. Use stack `LEO_*` + AWS principal; future `loxtep bus login` will wrap RBAC issuance — until then see `docs/sdk-bus-rbac-threat-model.md`.
+JWT is **not** bus IAM. Use your instance’s stream resource env + AWS principal; future `loxtep bus login` will wrap RBAC issuance — until then see `docs/sdk-bus-rbac-threat-model.md`.

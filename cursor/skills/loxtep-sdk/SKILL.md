@@ -7,9 +7,8 @@ description: Bootstrap @loxtep/sdk in Node (auth, env, REST vs Loxtep streams), 
 
 ## Auth (single mental model)
 
-1. `LOXTEP_AUTH_TOKEN` (CI/ephemeral), else  
-2. `~/.loxtep/credentials.json` (`loxtep login`), else  
-3. `~/.loxtep/customer-mcp.json` (`npx @loxtep/customer-mcp-server login`) — map `api_base_url` → `api_url`.
+1. `LOXTEP_AUTH_TOKEN` env var (CI/ephemeral), else  
+2. `~/.loxtep/credentials.json` (`loxtep login`).
 
 CLI/SDK do **not** auto-merge until one of these exists plus `api_url`.
 
@@ -33,6 +32,39 @@ export function createRuntimeClient() {
   });
 }
 ```
+
+## Bootstrapping from an SDK Connector
+
+If an SDK connector already exists (created via UI, API, or MCP — see the **`create-connector`** skill), export its `sdk_config` directly:
+
+```bash
+# Export as shell exports (source-able)
+loxtep config export --from-connector "<connector_id>" --format sh
+
+# Export as JSON (for programmatic use)
+loxtep config export --from-connector "<connector_id>" --format json
+
+# Export as .env file
+loxtep config export --from-connector "<connector_id>" --format env
+```
+
+The `--from-connector` flag fetches the connector's `sdk_config` (containing `api_url`, `organization_id`, `project_id`, `instance_id`, `region`) and outputs it in the requested format.
+
+**Quick start from a connector:**
+
+```bash
+# 1. Source the connector config into your shell
+eval "$(loxtep config export --from-connector "<connector_id>" --format sh)"
+
+# 2. SDK client picks up env vars automatically
+node -e "
+  const { LoxtepClient } = require('@loxtep/sdk');
+  const client = new LoxtepClient();
+  // client is configured from LOXTEP_* env vars
+"
+```
+
+> To create an SDK connector in the first place, see the **`create-connector`** skill (Flow — SDK Connector).
 
 ## Shell exports from an existing data product
 

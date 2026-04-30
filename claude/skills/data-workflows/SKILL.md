@@ -10,7 +10,7 @@ description:
 
 # Data mesh studio (Customer MCP)
 
-End-to-end playbooks for **projects**, **workflow graphs**, **connections**, **data products**, and **webhook consumptions**, plus **session** context. Pair with **`create-connector`** for SaaS/API ingest (Shopify, etc.) and **`loxtep-instances`** for runtime provisioning.
+End-to-end playbooks for **projects**, **workflow graphs**, **connections**, **data products**, and **webhook consumptions**, plus **session** context. Pair with **`create-connector`** for SaaS/API ingest (Shopify, etc.) or **SDK connector** for programmatic ingestion, and **`loxtep-instances`** for runtime provisioning.
 
 ## When to use
 
@@ -18,6 +18,7 @@ End-to-end playbooks for **projects**, **workflow graphs**, **connections**, **d
 - **S2:** Create an **omnichannel** or unified **data product** across multiple sources in a project.
 - **S3:** Register an **external webhook** for data product updates (`create_consumption`).
 - User asks for **projects**, **flows**, **templates**, **connections** (project nodes), **data products**, **consumptions**, or **patch workflow graph**.
+- **SDK / programmatic ingestion:** If the user wants to write events from their own code (not a SaaS connector), use the **`create-connector`** skill's **SDK Connector flow** (`connector_type: "sdk"`) to create the connector, then **`loxtep-sdk`** for SDK client usage. This skill handles the workflow graph and data products that receive those events.
 
 ## Prerequisites
 

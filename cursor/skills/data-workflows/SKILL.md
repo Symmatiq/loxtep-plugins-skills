@@ -6,6 +6,13 @@ description:
   session context, or "ingest / unify / expose sales data". Customer MCP tools loxtep_session,
   loxtep_projects, loxtep_templates, loxtep_workflows, loxtep_connections, loxtep_data_products.
   Stories S0, S2, S3; orchestrates with create-connector for S1. See docs/skills-user-stories.md.
+trigger: |
+  TRIGGER when: User asks about or mentions creating/listing/updating data products, workflows,
+  connections, connectors, ingestion pipelines, data mesh, omnichannel products, or consumptions
+  in context of Loxtep. Includes patterns: "create data product", "build workflow", "ingest data",
+  "setup connector", "unify data", "data mesh", "webhook consumption". Always invoke before making
+  direct loxtep_data_products or loxtep_workflows MCP calls to ensure proper architecture
+  (connectors → workflows → data products).
 ---
 
 # Data mesh studio (Customer MCP)

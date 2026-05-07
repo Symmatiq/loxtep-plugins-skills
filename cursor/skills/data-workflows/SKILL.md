@@ -163,6 +163,49 @@ Use the entity IDs from step 1 to create the edge and update workflow metadata:
 - Always include `"op": "update_workflow"` with `{ "metadata": { "graph_wired": true } }` in the second patch so the UI shows the workflow as configured.
 - Use `dry_run: true` to validate operations without persisting.
 
+### Flow F — Deploy before SDK ingestion (CRITICAL for runtime)
+
+Design-time configuration (Flows A–E above) creates the **graph definition** only. **Queues and bots do not exist until the project is deployed to an instance.** If the user wants to write events via the SDK, they must deploy first.
+
+**Deploy via MCP (`loxtep_deployments` facade):**
+
+| Step | Action | Tool | `operation` | Key args |
+|------|--------|------|-------------|----------|
+| 1 | Ensure instance exists | `loxtep_instances` | `list_instances` | — |
+| 2 | Trigger deployment | `loxtep_deployments` | `deploy_project` | `project_id`, `instance_id` |
+| 3 | Poll status | `loxtep_deployments` | `get_deployment` | `deployment_id` (from step 2) |
+| 4 | Resolve queues | `loxtep_deployments` | `get_runtime_mapping` | `workflow_id`, `project_id` |
+
+**Example — deploy_project:**
+```json
+{
+  "operation": "deploy_project",
+  "project_id": "<project_id>",
+  "instance_id": "<instance_id>",
+  "force_redeploy": false
+}
+```
+
+**What deployment does:**
+1. Creates a **microservice identifier** (namespace): `{instance_id_8}-{project_id_8}-{workflow_id_8}` (first 8 chars of each UUID, hyphens stripped)
+2. For each connection/transformation/data product in the graph, derives a **container_id**: `{prefix}-{entity_uuid_8}` (prefixes: `conn`, `xfm`, `val`, `dp`, `exp`, `pipe`)
+3. Registers **bots**: `{msId}-bot-{container_id}-{role}` (e.g. `a1b2c3d4-e5f6g7h8-i9j0k1l2-bot-conn-e5f6g7h8-handler`)
+4. Registers **queues**: `{msId}-queue-{container_id}-{direction}` where direction = `in`|`out`|`err`
+5. Stores a **`runtime_mapping`** on the deployment record (containers → entity_id, bot_ids, queue_ids)
+
+**After deployment**, the SDK can write events via:
+- `POST /workflows/{workflow_id}/events?project_id={project_id}` (resolves queue automatically)
+- Or directly to a queue using `get_runtime_mapping`
+
+**Recommended agent sequence for SDK ingestion:**
+1. Complete Flows B/C/E (project + workflow + graph with connection + data product)
+2. Ensure user has an instance (`loxtep_instances` → `list_instances`)
+3. `loxtep_deployments` → `deploy_project` with `project_id` + `instance_id`
+4. Poll `get_deployment` until status = `deployed`
+5. Use **`loxtep-sdk`** skill for SDK client bootstrap and event writing
+
+**Runtime naming convention reference:** See the **`loxtep-sdk`** skill for the full naming hierarchy and how to resolve queue/bot names from the runtime-mapping API.
+
 ## MCP mapping (operations and scope)
 
 | Step | User intent | Tool | `operation` | Scope | Key args |
@@ -175,10 +218,14 @@ Use the entity IDs from step 1 to create the edge and update workflow metadata:
 | 6 | Connection nodes | `loxtep_connections` | `create_connection`, `update_connection`, `delete_connection`, `list_connections`, `get_connection`, `test_connection` | **project** | `project_id` |
 | 7 | Data products | `loxtep_data_products` | `create_data_product`, `update_data_product`, `delete_data_product`, `list_data_products`, `get_data_product`, `get_data_product_lexicon` | **project** or org per op | `project_id` where required |
 | 8 | Webhook consumptions | `loxtep_data_products` | `list_consumptions`, `create_consumption` | **organization** | `data_product_id`, `endpoint_url`, … |
+| 9 | Deploy project | `loxtep_deployments` | `deploy_project` | **project** | `project_id`, `instance_id`, optional `force_redeploy` |
+| 10 | List/get deployments | `loxtep_deployments` | `list_deployments`, `get_deployment` | **organization** | `deployment_id`, optional filters |
+| 11 | Runtime mapping | `loxtep_deployments` | `get_runtime_mapping` | **project** | `workflow_id`, `project_id` |
 
 ## Pitfalls
 
 - Missing **`project_id`** on project-scoped workflow/connection ops.
+- **Deployment required before SDK ingestion** — Creating workflows, connections, and data products via MCP only defines the graph. Queues and bots are **not provisioned** until the project is deployed to an instance. Do not attempt SDK event writes until deployment completes. See Flow F above.
 - **`patch_workflow_graph` requires two sequential calls** — you cannot add nodes and connect them in a single call because you need the returned entity IDs for `connect_nodes`. Attempting to guess or pre-generate IDs will fail validation.
 - **`patch_workflow_graph` operations format** — The `operations` field is an **array of operation objects**, not a single operation. Each object must have an `op` field. Do NOT pass `type` instead of `op` (though the backend normalizes both, prefer `op`).
 - **`entity_type` must use hyphens** — Use `data-products` (not `data_products`), `quality-rules` (not `quality_rules`).

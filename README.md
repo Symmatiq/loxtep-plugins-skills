@@ -10,6 +10,7 @@ The MCP server registers **16 grouped tools** named `loxtep_projects`, `loxtep_w
 |--------|----------|------|-------------|
 | **Cursor** | Cursor IDE | [cursor/](cursor/) | Cursor Marketplace plugin: MCP, rules, skills. Install from Git or [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). |
 | **Claude** | Claude Code & Claude Cowork | [claude/](claude/) | Claude plugin: MCP, skills. Install from Git or Claude plugin discovery. |
+| **OpenCode** | OpenCode (terminal/desktop/IDE) | [opencode/](opencode/) | MCP config, skills, `opencode.json`. Copy skills to `.opencode/skills/` or `~/.config/opencode/skills/`. |
 | **Kiro** | Kiro IDE | [kiro/](kiro/) | MCP config + README. Copy `mcp.json` into `.kiro/settings/mcp.json` or `~/.kiro/settings/mcp.json`. |
 | **Antigravity** | Google Antigravity IDE | [antigravity/](antigravity/) | MCP config + README. Add Loxtep server via Manage MCP Servers → View raw config. |
 | **Codex** | OpenAI Codex | [codex/](codex/) | MCP config + README. Run `codex mcp add loxtep -- npx @loxtep/customer-mcp-server` or edit `~/.codex/config.toml`. |
@@ -28,6 +29,7 @@ Open the printed URL in your browser, sign in to Loxtep, and complete the OAuth 
 
 - **cursor/** — Cursor plugin (`.cursor-plugin/`, rules, skills, assets).
 - **claude/** — Claude Code / Cowork plugin (`.claude-plugin/`, skills).
+- **opencode/** — OpenCode (terminal/desktop/IDE): `opencode.json`, skills.
 - **kiro/** — Kiro IDE: MCP config and README.
 - **antigravity/** — Antigravity IDE: MCP config and README.
 - **codex/** — Codex CLI/IDE: TOML snippet and README.

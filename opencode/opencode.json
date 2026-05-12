@@ -1,0 +1,18 @@
+{
+  "mcp": {
+    "loxtep": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@loxtep/customer-mcp-server"]
+    }
+  },
+  "permission": {
+    "skill": {
+      "loxtep-*": "allow",
+      "create-connector": "allow",
+      "data-workflows": "allow",
+      "discover-govern-lineage": "allow",
+      "org-semantics-quality": "allow"
+    }
+  }
+}
